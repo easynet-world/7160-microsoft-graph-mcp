@@ -1,5 +1,5 @@
 {
-  "name": "easy-outlook-mcp",
+  "name": "microsoft-graph-mcp",
   "version": "0.0.1",
   "description": "Easy MCP Server project",
   "main": "index.js",
