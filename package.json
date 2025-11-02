@@ -45,6 +45,10 @@
     "framework"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/easynet-world/7160-microsoft-graph-mcp.git"
+  },
   "engines": {
     "node": ">=16.0.0"
   },
