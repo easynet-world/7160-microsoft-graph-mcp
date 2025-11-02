@@ -1,10 +1,10 @@
 {
   "name": "microsoft-graph-mcp",
   "version": "0.0.1",
-  "description": "Easy MCP Server project",
+  "description": "Microsoft Graph MCP Server - Comprehensive Microsoft 365 API integration via Model Context Protocol",
   "main": "index.js",
   "bin": {
-    "easy-outlook-mcp": "./node_modules/.bin/easy-mcp-server"
+    "microsoft-graph-mcp": "./node_modules/.bin/easy-mcp-server"
   },
   "scripts": {
     "start": "./start.sh",
