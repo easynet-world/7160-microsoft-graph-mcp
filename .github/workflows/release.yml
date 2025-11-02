@@ -18,8 +18,6 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-    env:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,79 +30,15 @@ jobs:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Configure npm authentication
-        run: |
-          if [ -n "$NPM_TOKEN" ]; then
-            # Configure npm authentication for semantic-release
-            # This ensures npm and semantic-release can authenticate with npm registry
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            # Also ensure the workspace .npmrc has authentication (if setup-node created one)
-            if [ -f .npmrc ]; then
-              echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
-            fi
-            echo "✅ npm authentication configured"
-            echo "Verified npm auth: $(npm whoami 2>&1 || echo 'Auth check will happen during publish')"
-          else
-            echo "⚠️  NPM_TOKEN not set - npm publishing will fail"
-            echo "Please add NPM_TOKEN secret in GitHub repository settings"
-          fi
-
       - name: Install dependencies
         run: npm ci
 
       - name: Run tests
         run: npm test -- --runInBand
 
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global --add safe.directory $GITHUB_WORKSPACE
-
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        continue-on-error: true
-        run: |
-          echo "=== Release Information ==="
-          echo "Current package version: $(node -p "require('./package.json').version")"
-          echo "Package name: $(node -p "require('./package.json').name")"
-          echo "Repository: $(node -p "require('./package.json').repository.url")"
-          echo ""
-          echo "=== Git Information ==="
-          echo "Current branch: $(git branch --show-current)"
-          echo "Latest tag: $(git describe --tags --abbrev=0 2>/dev/null || echo 'No tags found')"
-          echo "Commits since last tag:"
-          git log $(git describe --tags --abbrev=0 2>/dev/null || echo 'HEAD~10')..HEAD --oneline || echo "No commits found"
-          echo ""
-          echo "=== NPM Token Check ==="
-          if [ -z "$NPM_TOKEN" ]; then
-            echo "⚠️  ERROR: NPM_TOKEN not set!"
-            echo "⚠️  npm publishing will FAIL."
-            echo "📝 Please add NPM_TOKEN secret in GitHub repository settings:"
-            echo "   Settings → Secrets and variables → Actions → New repository secret"
-            echo "   Name: NPM_TOKEN"
-            echo "   Value: Your npm access token from https://www.npmjs.com/settings/YOUR_USERNAME/tokens"
-          else
-            echo "✅ NPM_TOKEN is set. npm publishing enabled."
-          fi
-          echo ""
-          echo "=== Running semantic-release ==="
-          npx semantic-release --debug 2>&1 | tee semantic-release.log || {
-            EXIT_CODE=$?
-            echo ""
-            echo "=== Semantic-release output ==="
-            if [ -f semantic-release.log ]; then
-              cat semantic-release.log
-            fi
-            echo ""
-            if [ $EXIT_CODE -eq 0 ]; then
-              echo "✅ Semantic-release completed successfully (no new release needed)"
-            else
-              echo "❌ Semantic-release failed with exit code $EXIT_CODE"
-              echo "Check the logs above for details."
-            fi
-            exit $EXIT_CODE
-          }
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
 
