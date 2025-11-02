@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "checkJs": false,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "typeRoots": ["node_modules/@types"],
+    "isolatedModules": true,
+    "noImplicitAny": false
+  },
+  "include": [
+    "lib/**/*",
+    "api/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "test",
+    "**/*.test.ts",
+    "**/*.test.js"
+  ]
+}
+
