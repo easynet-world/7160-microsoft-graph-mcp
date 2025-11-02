@@ -49,5 +49,10 @@ jobs:
         continue-on-error: true
         run: |
           echo "Current package version: $(node -p "require('./package.json').version")"
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "⚠️  Warning: NPM_TOKEN not set. npm publishing will be skipped."
+          else
+            echo "✅ NPM_TOKEN is set. npm publishing enabled."
+          fi
           npx semantic-release --debug || echo "No new release needed"
 
