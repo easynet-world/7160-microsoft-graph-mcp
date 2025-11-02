@@ -18,6 +18,8 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,6 +31,23 @@ jobs:
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Configure npm authentication
+        run: |
+          if [ -n "$NPM_TOKEN" ]; then
+            # Configure npm authentication for semantic-release
+            # This ensures npm and semantic-release can authenticate with npm registry
+            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+            # Also ensure the workspace .npmrc has authentication (if setup-node created one)
+            if [ -f .npmrc ]; then
+              echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
+            fi
+            echo "✅ npm authentication configured"
+            echo "Verified npm auth: $(npm whoami 2>&1 || echo 'Auth check will happen during publish')"
+          else
+            echo "⚠️  NPM_TOKEN not set - npm publishing will fail"
+            echo "Please add NPM_TOKEN secret in GitHub repository settings"
+          fi
 
       - name: Install dependencies
         run: npm ci
