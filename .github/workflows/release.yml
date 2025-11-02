@@ -49,10 +49,15 @@ jobs:
         continue-on-error: true
         run: |
           echo "Current package version: $(node -p "require('./package.json').version")"
+          echo "Package name: $(node -p "require('./package.json').name")"
           if [ -z "$NPM_TOKEN" ]; then
             echo "⚠️  Warning: NPM_TOKEN not set. npm publishing will be skipped."
+            echo "Please add NPM_TOKEN secret in GitHub repository settings."
           else
             echo "✅ NPM_TOKEN is set. npm publishing enabled."
+            echo "$NPM_TOKEN" | head -c 20
+            echo "... (token preview)"
           fi
-          npx semantic-release --debug || echo "No new release needed"
+          echo "Running semantic-release..."
+          npx semantic-release --debug || echo "Semantic-release completed (may have skipped if no changes)"
 

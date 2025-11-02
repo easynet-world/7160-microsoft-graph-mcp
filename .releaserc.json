@@ -61,7 +61,8 @@
     [
       "@semantic-release/npm",
       {
-        "npmPublish": true
+        "npmPublish": true,
+        "pkgRoot": "."
       }
     ],
     "@semantic-release/github"
