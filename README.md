@@ -1,15 +1,16 @@
-# easy-outlook-mcp
+# Microsoft Graph MCP
+
+> **The easiest way to run Microsoft Graph MCP**
 
 Microsoft Graph MCP Server built with Easy MCP Framework. This project provides comprehensive access to Microsoft Graph API through REST endpoints and MCP tools, enabling AI agents to interact with Microsoft 365 services including Outlook, OneDrive, Calendar, and more.
 
 ## Features
 
 - ✅ **Microsoft Graph API Integration** - Full access to Microsoft 365 services
-- ✅ **TypeScript Support** - Type-safe implementation with proper annotations
 - ✅ **MCP Tools** - All endpoints automatically exposed as MCP tools for AI agents
 - ✅ **REST API** - Standard REST endpoints with OpenAPI documentation
-- ✅ **Authentication** - Secure OAuth 2.0 client credentials flow
-- ✅ **Multiple Services** - Users, Mail, Calendar, Files (OneDrive)
+- ✅ **Secure Authentication** - OAuth 2.0 client credentials flow
+- ✅ **42+ Endpoints** - Users, Mail, Calendar, Files, Teams, Groups, Contacts, Tasks, and more
 
 ## Microsoft Graph Services
 
@@ -17,79 +18,135 @@ This MCP server provides access to:
 
 - **Users** - Get user information and profiles
 - **Mail** - Read and send email messages
-- **Calendar** - Access calendar events
+- **Calendar** - Access and manage calendar events
 - **Files** - Browse OneDrive files and folders
+- **Groups** - Manage groups and memberships
+- **Teams** - Access Microsoft Teams information
+- **Contacts** - Manage contacts and address books
+- **Tasks** - Create and manage to-do items
+- **Subscriptions** - Set up webhook subscriptions
+
+## Installation
+
+### Option 1: Install from npm (Recommended)
+
+```bash
+npm install microsoft-graph-mcp
+```
+
+### Option 2: Install from Source
+
+```bash
+git clone https://github.com/easynet-world/7160-microsoft-graph-mcp.git
+cd microsoft-graph-mcp
+npm install
+```
 
 ## Quick Start
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
+### 1. Configure Azure Credentials
 
-2. Configure Azure credentials:
-   ```bash
-   cp .env.example .env
-   # Edit .env and add your Azure credentials:
-   # AZURE_CLIENT_ID=your-client-id
-   # AZURE_CLIENT_SECRET=your-client-secret
-   # AZURE_TENANT_ID=your-tenant-id
-   ```
+Create a `.env` file in the project root:
 
-3. Start the server using any of these methods:
+```bash
+cp .env.example .env
+```
 
-   **Using shell script (recommended):**
-   ```bash
-   ./start.sh
-   ```
+Edit `.env` and add your Azure credentials:
 
-   **Using npm scripts:**
-   ```bash
-   npm start
-   npm run dev
-   ```
+```bash
+AZURE_CLIENT_ID=your-client-id
+AZURE_CLIENT_SECRET=your-client-secret
+AZURE_TENANT_ID=your-tenant-id
+```
 
-   **Direct command:**
-   ```bash
-   easy-mcp-server
-   ```
+### 2. Start the Server
 
-   **Without installation:**
-   ```bash
-   npx easy-mcp-server
-   ```
+**Using npm package (after installation):**
+```bash
+npm start
+# or
+npx microsoft-graph-mcp
+```
 
-## Shell Scripts
+**Using shell script (if installed from source):**
+```bash
+./start.sh
+```
 
-This project includes convenient shell scripts for common operations:
+**Using npm scripts:**
+```bash
+npm run dev
+```
 
-- **`./start.sh`** - Start the server
-  - Stops existing processes
-  - Clears ports if in use
-  - Loads environment variables from .env
-  - Starts the server with proper configuration
+**Without installation:**
+```bash
+npx easy-mcp-server
+```
 
-- **`./stop.sh`** - Stop the server
-  - Gracefully stops running server processes
-  - Cleans up background processes
+The server will start on port `8887` (REST API) and `8888` (MCP server).
 
-- **`./build.sh`** - Build npm package
-  - Cleans previous builds
-  - Installs dependencies
-  - Runs tests
-  - Creates distributable .tgz package
-  - Shows installation instructions
+### 3. Access the API
 
-## Available Endpoints
+- **API Documentation**: `http://localhost:8887/docs`
+- **OpenAPI Spec**: `http://localhost:8887/openapi.json`
+- **Health Check**: `http://localhost:8887/health`
 
-- **Health Check**: `GET /health`
-- **API Info**: `GET /api-info`
-- **OpenAPI Spec**: `GET /openapi.json`
-- **API Documentation**: `GET /docs`
+## Azure Setup
 
-## Microsoft Graph API Endpoints
+To use this MCP server, you need to register an application in Azure AD:
 
-### Users (10 endpoints)
+1. Go to [Azure Portal](https://portal.azure.com)
+2. Navigate to **Azure Active Directory** > **App registrations**
+3. Click **New registration**
+4. Fill in application details:
+   - **Name**: Microsoft Graph MCP Server (or any name you prefer)
+   - **Supported account types**: Accounts in this organizational directory only
+   - Click **Register**
+5. Go to **Certificates & secrets** → Click **New client secret**
+   - Add description and expiration
+   - Click **Add** and **copy the secret value immediately** (it's only shown once)
+6. Go to **API permissions** → Click **Add a permission** → **Microsoft Graph** → **Application permissions**
+   - Add the following permissions:
+     - `User.Read.All`
+     - `User.Read`
+     - `Mail.Read`
+     - `Mail.Send`
+     - `Calendars.Read`
+     - `Files.Read.All`
+     - `Group.Read.All`
+     - `Contacts.Read`
+     - `Tasks.ReadWrite`
+7. Click **Grant admin consent for [your organization]**
+8. Copy these values to your `.env` file:
+   - **Application (client) ID** → `AZURE_CLIENT_ID`
+   - **Directory (tenant) ID** → `AZURE_TENANT_ID`
+   - **Client secret value** → `AZURE_CLIENT_SECRET`
+
+## Environment Variables
+
+Required Azure configuration:
+
+| Variable | Description | Where to Find |
+|----------|-------------|---------------|
+| `AZURE_CLIENT_ID` | Azure application client ID | Azure Portal > App registrations > Your app > Overview |
+| `AZURE_CLIENT_SECRET` | Azure application client secret | Azure Portal > App registrations > Your app > Certificates & secrets |
+| `AZURE_TENANT_ID` | Azure AD tenant ID | Azure Portal > Azure Active Directory > Overview > Tenant ID |
+| `AZURE_SCOPE` | (Optional) Microsoft Graph API scope | Defaults to `https://graph.microsoft.com/.default` |
+
+Optional server configuration:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `EASY_MCP_SERVER_PORT` | `8887` | REST API server port |
+| `EASY_MCP_SERVER_MCP_PORT` | `8888` | MCP server port |
+| `EASY_MCP_SERVER_LOG_LEVEL` | `info` | Logging level |
+
+**Note**: The `.env` file is automatically loaded. You don't need to manually export these variables.
+
+## Available API Endpoints
+
+### Users (6 endpoints)
 - `GET /graph/users` - Get list of users (supports filtering, pagination)
 - `GET /graph/users/me` - Get current authenticated user
 - `POST /graph/users` - Create new user
@@ -97,7 +154,7 @@ This project includes convenient shell scripts for common operations:
 - `DELETE /graph/users/:userId` - Delete user
 - `GET /graph/users/:userId/photo` - Get user photo
 
-### Mail (8 endpoints)
+### Mail (7 endpoints)
 - `GET /graph/mail` - Get email messages (supports filtering)
 - `GET /graph/mail/:messageId` - Get specific message
 - `POST /graph/mail` - Send email message
@@ -136,135 +193,48 @@ This project includes convenient shell scripts for common operations:
 - `GET /graph/tasks` - Get tasks/to-do items
 - `POST /graph/tasks` - Create task
 
-### Applications (1 endpoint)
+### Additional Services
 - `GET /graph/applications` - Get applications
-
-### Directory (1 endpoint)
 - `GET /graph/directory` - Get directory objects
-
-### Organization (1 endpoint)
 - `GET /graph/organization` - Get organization information
-
-### People (1 endpoint)
 - `GET /graph/people` - Get people (colleagues and contacts)
-
-### Subscriptions (2 endpoints)
 - `GET /graph/subscriptions` - Get webhook subscriptions
 - `POST /graph/subscriptions` - Create webhook subscription
 
-**Total: 42+ endpoints covering all major Microsoft Graph services**
+**All endpoints are automatically exposed as MCP tools for AI agents to use.**
 
-All endpoints are automatically exposed as MCP tools for AI agents to use.
+## Usage Examples
 
-## Azure Setup
-
-To use this MCP server, you need to register an application in Azure AD:
-
-1. Go to [Azure Portal](https://portal.azure.com)
-2. Navigate to **Azure Active Directory** > **App registrations**
-3. Click **New registration**
-4. Fill in application details and register
-5. Go to **Certificates & secrets** → Create a new client secret
-6. Go to **API permissions** → Add Microsoft Graph permissions:
-   - `User.Read.All`
-   - `User.Read`
-   - `Mail.Read`
-   - `Mail.Send`
-   - `Calendars.Read`
-   - `Files.Read.All`
-7. Grant admin consent for all permissions
-8. Copy the Application (client) ID, Directory (tenant) ID, and client secret to your `.env` file
-
-See `mcp/resources/microsoft-graph-documentation.md` for detailed documentation.
-
-## Adding APIs
-
-Create API files in the `api/` directory using TypeScript. Each file should export a class that extends BaseAPI from easy-mcp-server.
-
-Example API file (`api/example/get.ts`):
-```typescript
-const { BaseAPI } = require('easy-mcp-server/base-api');
-import { Request, Response } from 'express';
-
-// @description('Example API endpoint')
-// @summary('Get example data')
-// @tags('example')
-export default class GetExample extends BaseAPI {
-  summary = 'Get example data';
-  description = 'Retrieves example data';
-  tags = ['example'];
-
-  async process(req: Request, res: Response): Promise<void> {
-    res.json({ 
-      message: 'Hello from Easy MCP Server!',
-      timestamp: Date.now()
-    });
-  }
-}
-```
-
-## Environment Variables
-
-Copy `.env.example` to `.env` and configure your authentication credentials:
+### Using REST API
 
 ```bash
-cp .env.example .env
-# Edit .env with your Azure credentials
+# Get current user
+curl http://localhost:8887/graph/users/me
+
+# Get email messages
+curl http://localhost:8887/graph/mail
+
+# Get calendar events
+curl http://localhost:8887/graph/calendar
 ```
 
-**Azure Configuration (Required):**
-- `AZURE_CLIENT_ID`: Your Azure application (client) ID
-  - Get this from: Azure Portal > App registrations > Your app > Overview
-- `AZURE_CLIENT_SECRET`: Your Azure application client secret
-  - Get this from: Azure Portal > App registrations > Your app > Certificates & secrets
-  - **Important**: Create a new client secret and copy the value immediately (it's only shown once)
-- `AZURE_TENANT_ID`: Your Azure AD tenant ID
-  - Get this from: Azure Portal > Azure Active Directory > Overview > Tenant ID
-- `AZURE_SCOPE`: (Optional) Microsoft Graph API scope (defaults to `https://graph.microsoft.com/.default`)
+### Using MCP Tools
 
-**Server Configuration (Optional):**
-- `EASY_MCP_SERVER_PORT`: Server port (default: 8887)
-- `EASY_MCP_SERVER_MCP_PORT`: MCP server port (default: 8888)
-- `EASY_MCP_SERVER_CORS_ORIGIN`: CORS origin
-- `EASY_MCP_SERVER_CORS_METHODS`: Allowed HTTP methods
-- `EASY_MCP_SERVER_LOG_LEVEL`: Logging level (default: info)
+When connected as an MCP server, all endpoints are available as tools that AI agents can call directly. The server automatically exposes each endpoint as an MCP tool with proper descriptions and parameters.
 
-**Note**: The `.env` file is automatically loaded by the application. You don't need to manually export these variables - just create the `.env` file and the values will be used.
+## Server Management
 
-## Building and Publishing as npm Package
+If installed from source, you can use these convenience scripts:
 
-This project is configured to be built and published as an npm package:
-
-1. **Build the package:**
-   ```bash
-   ./build.sh
-   # or
-   npm run build
-   ```
-
-2. **Install locally for testing:**
-   ```bash
-   npm install ./easy-outlook-mcp-1.0.0.tgz
-   ```
-
-3. **Install in another project:**
-   ```bash
-   cd /path/to/another/project
-   npm install /path/to/easy-outlook-mcp-1.0.0.tgz
-   ```
-
-4. **Start the installed package with npx:**
-   ```bash
-   npx easy-mcp-server
-   ```
-
-5. **Publish to npm registry:**
-   ```bash
-   npm publish easy-outlook-mcp-1.0.0.tgz
-   ```
+- **`./start.sh`** - Start the server (stops existing processes, clears ports)
+- **`./stop.sh`** - Stop the server gracefully
 
 ## Learn More
 
 - [Easy MCP Server Documentation](https://github.com/easynet-world/7134-easy-mcp-server)
 - [Model Context Protocol](https://modelcontextprotocol.io/)
+- [Microsoft Graph API Documentation](https://learn.microsoft.com/en-us/graph/overview)
 
+## License
+
+MIT
