@@ -38,11 +38,12 @@ npx microsoft-graph-mcp
 ```
 
 **That's it!** The server runs on:
-- Service | URL | Notes
-- --- | --- | ---
-- REST API | http://localhost:8887 | Base URL for all endpoints
-- API Docs (Swagger) | http://localhost:8887/docs | Interactive documentation
-- MCP Server | http://localhost:8888 | Model Context Protocol server
+
+Service | URL | Notes
+--- | --- | ---
+REST API | http://localhost:8887 | Base URL for all endpoints
+API Docs (Swagger) | http://localhost:8887/docs | Interactive documentation
+MCP Server | http://localhost:8888 | Model Context Protocol server
 
 ### Run with .env file
 
