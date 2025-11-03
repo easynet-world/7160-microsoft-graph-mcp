@@ -1,4 +1,4 @@
-import { GraphClient } from '../../../lib/graph-client';
+import { GraphClient } from '../../../../lib/graph-client';
 
 // @description('Request parameters for getting mail folders')
 class Request {

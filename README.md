@@ -1,14 +1,22 @@
 # microsoft-graph-mcp
 
-<h2 style="font-size: 1.5em; margin: 1em 0;">🚀 The Easiest way to run Microsoft Graph MCP</h2>
+<h2 style="font-size: 1.5em; margin: 1em 0;">🚀 Microsoft Graph MCP Server</h2>
 
 **Microsoft 365 integration for AI assistants** - Connect Cursor, Claude Desktop, and other MCP-compatible tools directly to Microsoft Graph. Access Outlook, OneDrive, Calendar, Teams, and automate workflows with AI.
 
 [![npm version](https://img.shields.io/npm/v/microsoft-graph-mcp)](https://www.npmjs.com/package/microsoft-graph-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+[![MCP](https://img.shields.io/badge/MCP-Compatible-success.svg)](https://modelcontextprotocol.io/)
+[![Microsoft Graph](https://img.shields.io/badge/Microsoft%20Graph-API-0078D4.svg)](https://learn.microsoft.com/en-us/graph/overview)
+[![Powered by easy-mcp-server](https://img.shields.io/badge/Powered%20by-easy--mcp--server-orange.svg)](https://github.com/easynet-world/7134-easy-mcp-server)
 
 ---
 
 ## 🚀 Quick Start
+
+### Run with npx (Recommended)
 
 ```bash
 AZURE_CLIENT_ID=your-client-id \
@@ -22,86 +30,70 @@ npx microsoft-graph-mcp
 - 📚 **API Docs**: http://localhost:8887/docs (Swagger UI)
 - 🤖 **MCP Server**: http://localhost:8888
 
+### Run with .env file
+
+Create a `.env` file:
+
+```bash
+AZURE_CLIENT_ID=your-client-id
+AZURE_CLIENT_SECRET=your-client-secret
+AZURE_TENANT_ID=your-tenant-id
+```
+
+Then run:
+```bash
+npx microsoft-graph-mcp
+```
+
 ---
 
-## 📋 Detailed Configuration
+## 📋 Azure Configuration
 
-### Getting Your Azure Credentials
+### Step 1: Create Azure App Registration
 
 1. Go to [Azure Portal](https://portal.azure.com)
 2. Navigate to **Azure Active Directory** > **App registrations**
 3. Click **New registration**
-4. Fill in application details:
-   - **Name**: Microsoft Graph MCP Server (or any name you prefer)
-   - **Supported account types**: Accounts in this organizational directory only
+4. Fill in:
+   - **Name**: Microsoft Graph MCP Server
+   - **Supported account types**: Accounts in this organizational directory only (or Multi-tenant)
    - Click **Register**
-5. Go to **Certificates & secrets** → Click **New client secret**
-   - Add description and expiration
-   - Click **Add** and **copy the secret value immediately** (it's only shown once)
-6. Go to **API permissions** → Click **Add a permission** → **Microsoft Graph** → **Application permissions**
-   - Add the following permissions:
-     - `User.Read.All` - Read all users
-     - `User.Read` - Read user profile
-     - `Mail.Read` - Read mail
-     - `Mail.Send` - Send mail
-     - `Calendars.Read` - Read calendars
-     - `Files.Read.All` - Read all files
-     - `Group.Read.All` - Read all groups
-     - `Contacts.Read` - Read contacts
-     - `Tasks.ReadWrite` - Read and write tasks
-7. Click **Grant admin consent for [your organization]**
-8. Copy these values:
-   - **Application (client) ID** → `AZURE_CLIENT_ID`
-   - **Directory (tenant) ID** → `AZURE_TENANT_ID`
-   - **Client secret value** → `AZURE_CLIENT_SECRET`
 
-### Using Environment Variables
+### Step 2: Get Credentials
 
-Instead of passing credentials inline, you can use a `.env` file for persistent configuration:
+1. **Application (client) ID** → Copy this as `AZURE_CLIENT_ID`
+2. **Directory (tenant) ID** → Copy this as `AZURE_TENANT_ID`
+3. Go to **Certificates & secrets** → **New client secret**
+   - Copy the **secret value** as `AZURE_CLIENT_SECRET` (only shown once!)
 
-```bash
-# Create .env file
-cat > .env << EOF
-AZURE_CLIENT_ID=your-client-id
-AZURE_CLIENT_SECRET=your-client-secret
-AZURE_TENANT_ID=your-tenant-id
-EOF
+### Step 3: Add Application Permissions
 
-# Run (it will automatically load .env)
-npx microsoft-graph-mcp
-```
+1. Go to **API permissions** → **Add a permission** → **Microsoft Graph** → **Application permissions**
+2. Add these permissions:
+   - `User.Read.All` - Read all users
+   - `Mail.Read` - Read mail in all mailboxes
+   - `Mail.Send` - Send mail as any user
+   - `Calendars.Read` - Read calendars in all mailboxes
+   - `Files.Read.All` - Read all files
+   - `Group.Read.All` - Read all groups
+   - `Contacts.Read` - Read contacts
+   - `Tasks.ReadWrite.All` - Read and write tasks
+   - `Organization.Read.All` - Read organization information
+   - `People.Read.All` - Read people profiles
+   - `Application.Read.All` - Read applications
+   - `Subscription.Read.All` - Manage subscriptions
 
-### Local Installation
-
-For a permanent local installation:
-
-```bash
-# Install locally
-npm install microsoft-graph-mcp
-
-# Create .env file
-cat > .env << EOF
-AZURE_CLIENT_ID=your-client-id
-AZURE_CLIENT_SECRET=your-client-secret
-AZURE_TENANT_ID=your-tenant-id
-EOF
-
-# Run
-npm start
-# OR
-npx microsoft-graph-mcp
-```
+3. **⚠️ CRITICAL:** Click **Grant admin consent for [your organization]**
 
 ---
 
 ## 💻 Use in Cursor / Claude Desktop
 
-### Option A: Use as npm package (Recommended)
+### Cursor Configuration
 
-**For Cursor:**
-1. Open Cursor Settings → Features → Model Context Protocol
-2. Click "Edit Config"
-3. Add this to your MCP config:
+1. Open **Cursor Settings** → **Features** → **Model Context Protocol**
+2. Click **"Edit Config"**
+3. Add:
 
 ```json
 {
@@ -119,37 +111,15 @@ npx microsoft-graph-mcp
 }
 ```
 
-**For Claude Desktop:**
-1. Open `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac)
-   or `%APPDATA%\Claude\claude_desktop_config.json` (Windows)
-2. Add the same configuration above
+### Claude Desktop Configuration
 
-**For any MCP client:**
-The server runs automatically when invoked via `npx microsoft-graph-mcp`
+1. Open config file:
+   - **Mac**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
-### Option B: Local Installation
+2. Add the same configuration as above
 
-If you prefer a local setup:
-
-```bash
-# Install locally
-npm install microsoft-graph-mcp
-
-# Create .env file
-cat > .env << EOF
-AZURE_CLIENT_ID=your-client-id
-AZURE_CLIENT_SECRET=your-client-secret
-AZURE_TENANT_ID=your-tenant-id
-EOF
-
-# Run it
-npx microsoft-graph-mcp
-```
-
-Then configure your MCP client to run:
-```bash
-npx microsoft-graph-mcp
-```
+3. Restart Claude Desktop
 
 ---
 
@@ -175,14 +145,14 @@ http://localhost:8887/openapi.json
 
 ### 📝 Common API Examples
 
-#### Get Current User
+#### Get Users
 ```bash
-curl http://localhost:8887/graph/users/me
+curl "http://localhost:8887/graph/users?$top=10"
 ```
 
 #### Get Email Messages
 ```bash
-curl "http://localhost:8887/graph/mail?$top=10"
+curl "http://localhost:8887/graph/mail?userId=user@domain.com&$top=10"
 ```
 
 #### Send an Email
@@ -198,7 +168,7 @@ curl -X POST http://localhost:8887/graph/mail \
 
 #### Get Calendar Events
 ```bash
-curl "http://localhost:8887/graph/calendar?$top=10"
+curl "http://localhost:8887/graph/calendar?userId=user@domain.com&$top=10"
 ```
 
 #### Create Calendar Event
@@ -208,13 +178,14 @@ curl -X POST http://localhost:8887/graph/calendar/events \
   -d '{
     "subject": "Team Meeting",
     "start": {"dateTime": "2024-01-15T10:00:00", "timeZone": "UTC"},
-    "end": {"dateTime": "2024-01-15T11:00:00", "timeZone": "UTC"}
+    "end": {"dateTime": "2024-01-15T11:00:00", "timeZone": "UTC"},
+    "userId": "user@domain.com"
   }'
 ```
 
 #### Get OneDrive Files
 ```bash
-curl "http://localhost:8887/graph/files?$top=20"
+curl "http://localhost:8887/graph/files?userId=user@domain.com&$top=20"
 ```
 
 #### Get Teams
@@ -228,33 +199,33 @@ curl http://localhost:8887/graph/teams
 
 ### Users (6 endpoints)
 - `GET /graph/users` - Get list of users (supports filtering, pagination)
-- `GET /graph/users/me` - Get current authenticated user
+- `GET /graph/users/:userId` - Get specific user by ID
 - `POST /graph/users` - Create new user
 - `PATCH /graph/users/:userId` - Update user
 - `DELETE /graph/users/:userId` - Delete user
 - `GET /graph/users/:userId/photo` - Get user photo
 
 ### Mail (7 endpoints)
-- `GET /graph/mail` - Get email messages (supports filtering)
-- `GET /graph/mail/:messageId` - Get specific message
+- `GET /graph/mail?userId=user@domain.com` - Get email messages (supports filtering)
+- `GET /graph/mail/:messageId?userId=user@domain.com` - Get specific message
 - `POST /graph/mail` - Send email message
-- `POST /graph/mail/:messageId/reply` - Reply to message
-- `POST /graph/mail/:messageId/forward` - Forward message
-- `DELETE /graph/mail/:messageId` - Delete message
-- `GET /graph/mail/folders` - Get mail folders
+- `POST /graph/mail/:messageId/reply?userId=user@domain.com` - Reply to message
+- `POST /graph/mail/:messageId/forward?userId=user@domain.com` - Forward message
+- `DELETE /graph/mail/:messageId?userId=user@domain.com` - Delete message
+- `GET /graph/mail/folders?userId=user@domain.com` - Get mail folders
 
 ### Calendar (5 endpoints)
-- `GET /graph/calendar` - Get calendar events (supports filtering)
-- `GET /graph/calendars` - Get user calendars
-- `POST /graph/calendar/events` - Create calendar event
-- `PATCH /graph/calendar/events/:eventId` - Update calendar event
-- `DELETE /graph/calendar/events/:eventId` - Delete calendar event
+- `GET /graph/calendar?userId=user@domain.com` - Get calendar events (supports filtering)
+- `GET /graph/calendars?userId=user@domain.com` - Get user calendars
+- `POST /graph/calendar/events` - Create calendar event (include userId in body)
+- `PATCH /graph/calendar/events/:eventId?userId=user@domain.com` - Update calendar event
+- `DELETE /graph/calendar/events/:eventId?userId=user@domain.com` - Delete calendar event
 
 ### Files/OneDrive (4 endpoints)
-- `GET /graph/files` - Get files and folders from OneDrive
-- `GET /graph/drives` - Get drives (OneDrive and SharePoint)
-- `POST /graph/files/upload` - Upload file to OneDrive
-- `DELETE /graph/files/:itemId` - Delete file or folder
+- `GET /graph/files?userId=user@domain.com` - Get files and folders from OneDrive
+- `GET /graph/drives?userId=user@domain.com` - Get drives (OneDrive and SharePoint)
+- `POST /graph/files/upload` - Upload file to OneDrive (include userId in body)
+- `DELETE /graph/files/:itemId?userId=user@domain.com` - Delete file or folder
 
 ### Groups (3 endpoints)
 - `GET /graph/groups` - Get list of groups
@@ -266,18 +237,18 @@ curl http://localhost:8887/graph/teams
 - `GET /graph/teams/:teamId/channels` - Get team channels
 
 ### Contacts (2 endpoints)
-- `GET /graph/contacts` - Get contacts
-- `POST /graph/contacts` - Create contact
+- `GET /graph/contacts?userId=user@domain.com` - Get contacts
+- `POST /graph/contacts` - Create contact (include userId in body)
 
 ### Tasks (2 endpoints)
-- `GET /graph/tasks` - Get tasks/to-do items
-- `POST /graph/tasks` - Create task
+- `GET /graph/tasks?userId=user@domain.com` - Get tasks/to-do items
+- `POST /graph/tasks` - Create task (include userId in body)
 
 ### Additional Services
 - `GET /graph/applications` - Get applications
 - `GET /graph/directory` - Get directory objects
 - `GET /graph/organization` - Get organization information
-- `GET /graph/people` - Get people (colleagues and contacts)
+- `GET /graph/people?userId=user@domain.com` - Get people (colleagues and contacts)
 - `GET /graph/subscriptions` - Get webhook subscriptions
 - `POST /graph/subscriptions` - Create webhook subscription
 
@@ -295,8 +266,6 @@ curl http://localhost:8887/graph/teams
 
 ### Environment Variables
 
-All configuration can be set via environment variables:
-
 ```bash
 # Required Azure Configuration
 AZURE_CLIENT_ID=your-client-id
@@ -309,10 +278,6 @@ EASY_MCP_SERVER_PORT=8887                        # REST API port (default: 8887)
 EASY_MCP_SERVER_MCP_PORT=8888                   # MCP server port (default: 8888)
 EASY_MCP_SERVER_LOG_LEVEL=info                   # Logging level (default: info)
 ```
-
-### Required Azure Permissions
-
-See the [Detailed Configuration](#-detailed-configuration) section above for the complete list of required Azure permissions when setting up your app.
 
 ---
 
@@ -374,9 +339,6 @@ See the [Detailed Configuration](#-detailed-configuration) section above for the
 
 ## 📖 Learn More
 
-- **Easy MCP Server Framework**: 
-  - [GitHub Repository](https://github.com/easynet-world/7134-easy-mcp-server)
-  - [npm Package](https://www.npmjs.com/package/easy-mcp-server)
 - **Microsoft Graph API**: [https://learn.microsoft.com/en-us/graph/overview](https://learn.microsoft.com/en-us/graph/overview)
 - **Model Context Protocol**: [https://modelcontextprotocol.io/](https://modelcontextprotocol.io/)
 
@@ -395,20 +357,29 @@ See the [Detailed Configuration](#-detailed-configuration) section above for the
 1. Check **Swagger UI**: http://localhost:8887/docs
 2. Test authentication: `curl http://localhost:8887/graph/users/me`
 3. Check server health: `curl http://localhost:8887/health`
-4. Review the [Azure Setup](#-detailed-configuration) guide
+4. Review the [Azure Configuration](#-azure-configuration) section above
 
 ---
 
-**Ready to automate Microsoft 365 with AI?** Get started:
+## 🛠️ Development
 
-```bash
-# Install and run directly
-npx microsoft-graph-mcp
+This MCP server is built using the **easy-mcp-server** framework. 
 
-# Or install locally for project use
-npm install microsoft-graph-mcp
-npm start
-```
+For development documentation, including:
+- How to create custom endpoints
+- Project structure and architecture
+- Testing and debugging
+- Contributing guidelines
+
+👉 **See the [easy-mcp-server documentation](https://github.com/easynet-world/7134-easy-mcp-server) for development details.**
+
+---
+
+## 📦 Package Info
+
+- **npm**: [microsoft-graph-mcp](https://www.npmjs.com/package/microsoft-graph-mcp)
+- **Repository**: [GitHub](https://github.com/easynet-world/7160-microsoft-graph-mcp)
+- **License**: MIT
 
 ---
 
