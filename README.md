@@ -18,6 +18,21 @@
 
 ---
 
+## ✅ What we provide (this project)
+
+Deliverable | Description
+--- | ---
+AI-ready MCP server | Exposes Microsoft Graph capabilities as MCP tools for AI assistants
+REST gateway for Microsoft Graph | Local HTTP API with OpenAPI/Swagger at `/docs`
+Prebuilt Microsoft 365 endpoints | Users, Mail (send/reply/forward), Calendar (CRUD events), Files/OneDrive (list/upload/delete), Teams (teams/channels), Groups (members), Contacts, Tasks, Subscriptions (webhooks), Applications, Directory, Organization, People
+Authentication via Azure AD | App Registration flow using `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, `AZURE_TENANT_ID`
+Production-ready scaffolding | Port/config management, error handling, health checks, API info, logging
+Tested TypeScript implementation | Type-safe code with Jest tests covering all endpoints
+Developer UX | Copy-pasteable `curl` examples, Swagger try-it-out, easy local run with `npx`
+Security posture | Uses Application permissions; no data persisted by the server
+
+---
+
 ## 📊 Microsoft Graph Overview
 
 <img src="images/microsoft-graph-network.png" alt="Microsoft Graph Network" style="width: 100%; max-width: 100%;"/>
