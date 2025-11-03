@@ -41,7 +41,10 @@
   "keywords": [
     "mcp",
     "api",
-    "framework"
+    "framework",
+    "microsoft-graph",
+    "microsoft-365",
+    "outlook"
   ],
   "license": "MIT",
   "repository": {
