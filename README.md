@@ -38,9 +38,12 @@ npx microsoft-graph-mcp
 ```
 
 **That's it!** The server runs on:
-- 🌐 **REST API**: http://localhost:8887
-- 📚 **API Docs**: http://localhost:8887/docs (Swagger UI)
-- 🤖 **MCP Server**: http://localhost:8888
+
+Service | URL | Notes
+--- | --- | ---
+REST API | http://localhost:8887 | Base URL for all endpoints
+API Docs (Swagger) | http://localhost:8887/docs | Interactive documentation
+MCP Server | http://localhost:8888 | Model Context Protocol server
 
 ### Run with .env file
 
@@ -82,18 +85,21 @@ npx microsoft-graph-mcp
 
 1. Go to **API permissions** → **Add a permission** → **Microsoft Graph** → **Application permissions**
 2. Add these permissions:
-   - `User.Read.All` - Read all users
-   - `Mail.Read` - Read mail in all mailboxes
-   - `Mail.Send` - Send mail as any user
-   - `Calendars.Read` - Read calendars in all mailboxes
-   - `Files.Read.All` - Read all files
-   - `Group.Read.All` - Read all groups
-   - `Contacts.Read` - Read contacts
-   - `Tasks.ReadWrite.All` - Read and write tasks
-   - `Organization.Read.All` - Read organization information
-   - `People.Read.All` - Read people profiles
-   - `Application.Read.All` - Read applications
-   - `Subscription.Read.All` - Manage subscriptions
+
+   Permission | Type | Description
+   --- | --- | ---
+   `User.Read.All` | Application | Read all users
+   `Mail.Read` | Application | Read mail in all mailboxes
+   `Mail.Send` | Application | Send mail as any user
+   `Calendars.Read` | Application | Read calendars in all mailboxes
+   `Files.Read.All` | Application | Read all files
+   `Group.Read.All` | Application | Read all groups
+   `Contacts.Read` | Application | Read contacts
+   `Tasks.ReadWrite.All` | Application | Read and write tasks
+   `Organization.Read.All` | Application | Read organization information
+   `People.Read.All` | Application | Read people profiles
+   `Application.Read.All` | Application | Read applications
+   `Subscription.Read.All` | Application | Manage subscriptions
 
 3. **⚠️ CRITICAL:** Click **Grant admin consent for [your organization]**
 
@@ -210,65 +216,95 @@ curl http://localhost:8887/graph/teams
 ## 📚 All Available Endpoints
 
 ### Users (6 endpoints)
-- `GET /graph/users` - Get list of users (supports filtering, pagination)
-- `GET /graph/users/:userId` - Get specific user by ID
-- `POST /graph/users` - Create new user
-- `PATCH /graph/users/:userId` - Update user
-- `DELETE /graph/users/:userId` - Delete user
-- `GET /graph/users/:userId/photo` - Get user photo
+
+Method | Path | Description
+--- | --- | ---
+GET | `/graph/users` | Get list of users (supports filtering, pagination)
+GET | `/graph/users/:userId` | Get specific user by ID
+POST | `/graph/users` | Create new user
+PATCH | `/graph/users/:userId` | Update user
+DELETE | `/graph/users/:userId` | Delete user
+GET | `/graph/users/:userId/photo` | Get user photo
 
 ### Mail (7 endpoints)
-- `GET /graph/mail?userId=user@domain.com` - Get email messages (supports filtering)
-- `GET /graph/mail/:messageId?userId=user@domain.com` - Get specific message
-- `POST /graph/mail` - Send email message
-- `POST /graph/mail/:messageId/reply?userId=user@domain.com` - Reply to message
-- `POST /graph/mail/:messageId/forward?userId=user@domain.com` - Forward message
-- `DELETE /graph/mail/:messageId?userId=user@domain.com` - Delete message
-- `GET /graph/mail/folders?userId=user@domain.com` - Get mail folders
+
+Method | Path | Description
+--- | --- | ---
+GET | `/graph/mail?userId=user@domain.com` | Get email messages (supports filtering)
+GET | `/graph/mail/:messageId?userId=user@domain.com` | Get specific message
+POST | `/graph/mail` | Send email message
+POST | `/graph/mail/:messageId/reply?userId=user@domain.com` | Reply to message
+POST | `/graph/mail/:messageId/forward?userId=user@domain.com` | Forward message
+DELETE | `/graph/mail/:messageId?userId=user@domain.com` | Delete message
+GET | `/graph/mail/folders?userId=user@domain.com` | Get mail folders
 
 ### Calendar (5 endpoints)
-- `GET /graph/calendar?userId=user@domain.com` - Get calendar events (supports filtering)
-- `GET /graph/calendars?userId=user@domain.com` - Get user calendars
-- `POST /graph/calendar/events` - Create calendar event (include userId in body)
-- `PATCH /graph/calendar/events/:eventId?userId=user@domain.com` - Update calendar event
-- `DELETE /graph/calendar/events/:eventId?userId=user@domain.com` - Delete calendar event
+
+Method | Path | Description
+--- | --- | ---
+GET | `/graph/calendar?userId=user@domain.com` | Get calendar events (supports filtering)
+GET | `/graph/calendars?userId=user@domain.com` | Get user calendars
+POST | `/graph/calendar/events` | Create calendar event (include userId in body)
+PATCH | `/graph/calendar/events/:eventId?userId=user@domain.com` | Update calendar event
+DELETE | `/graph/calendar/events/:eventId?userId=user@domain.com` | Delete calendar event
 
 ### Files/OneDrive (4 endpoints)
-- `GET /graph/files?userId=user@domain.com` - Get files and folders from OneDrive
-- `GET /graph/drives?userId=user@domain.com` - Get drives (OneDrive and SharePoint)
-- `POST /graph/files/upload` - Upload file to OneDrive (include userId in body)
-- `DELETE /graph/files/:itemId?userId=user@domain.com` - Delete file or folder
+
+Method | Path | Description
+--- | --- | ---
+GET | `/graph/files?userId=user@domain.com` | Get files and folders from OneDrive
+GET | `/graph/drives?userId=user@domain.com` | Get drives (OneDrive and SharePoint)
+POST | `/graph/files/upload` | Upload file to OneDrive (include userId in body)
+DELETE | `/graph/files/:itemId?userId=user@domain.com` | Delete file or folder
 
 ### Groups (3 endpoints)
-- `GET /graph/groups` - Get list of groups
-- `POST /graph/groups` - Create new group
-- `GET /graph/groups/:groupId/members` - Get group members
+
+Method | Path | Description
+--- | --- | ---
+GET | `/graph/groups` | Get list of groups
+POST | `/graph/groups` | Create new group
+GET | `/graph/groups/:groupId/members` | Get group members
 
 ### Teams (2 endpoints)
-- `GET /graph/teams` - Get list of teams
-- `GET /graph/teams/:teamId/channels` - Get team channels
+
+Method | Path | Description
+--- | --- | ---
+GET | `/graph/teams` | Get list of teams
+GET | `/graph/teams/:teamId/channels` | Get team channels
 
 ### Contacts (2 endpoints)
-- `GET /graph/contacts?userId=user@domain.com` - Get contacts
-- `POST /graph/contacts` - Create contact (include userId in body)
+
+Method | Path | Description
+--- | --- | ---
+GET | `/graph/contacts?userId=user@domain.com` | Get contacts
+POST | `/graph/contacts` | Create contact (include userId in body)
 
 ### Tasks (2 endpoints)
-- `GET /graph/tasks?userId=user@domain.com` - Get tasks/to-do items
-- `POST /graph/tasks` - Create task (include userId in body)
+
+Method | Path | Description
+--- | --- | ---
+GET | `/graph/tasks?userId=user@domain.com` | Get tasks/to-do items
+POST | `/graph/tasks` | Create task (include userId in body)
 
 ### Additional Services
-- `GET /graph/applications` - Get applications
-- `GET /graph/directory` - Get directory objects
-- `GET /graph/organization` - Get organization information
-- `GET /graph/people?userId=user@domain.com` - Get people (colleagues and contacts)
-- `GET /graph/subscriptions` - Get webhook subscriptions
-- `POST /graph/subscriptions` - Create webhook subscription
+
+Method | Path | Description
+--- | --- | ---
+GET | `/graph/applications` | Get applications
+GET | `/graph/directory` | Get directory objects
+GET | `/graph/organization` | Get organization information
+GET | `/graph/people?userId=user@domain.com` | Get people (colleagues and contacts)
+GET | `/graph/subscriptions` | Get webhook subscriptions
+POST | `/graph/subscriptions` | Create webhook subscription
 
 ### System
-- `GET /health` - Health check
-- `GET /api-info` - API information
-- `GET /openapi.json` - OpenAPI specification
-- `GET /docs` - Swagger UI documentation
+
+Method | Path | Description
+--- | --- | ---
+GET | `/health` | Health check
+GET | `/api-info` | API information
+GET | `/openapi.json` | OpenAPI specification
+GET | `/docs` | Swagger UI documentation
 
 **All endpoints are automatically exposed as MCP tools for AI agents to use.**
 
@@ -278,18 +314,15 @@ curl http://localhost:8887/graph/teams
 
 ### Environment Variables
 
-```bash
-# Required Azure Configuration
-AZURE_CLIENT_ID=your-client-id
-AZURE_CLIENT_SECRET=your-client-secret
-AZURE_TENANT_ID=your-tenant-id
-
-# Optional
-AZURE_SCOPE=https://graph.microsoft.com/.default  # Default Microsoft Graph scope
-EASY_MCP_SERVER_PORT=8887                        # REST API port (default: 8887)
-EASY_MCP_SERVER_MCP_PORT=8888                   # MCP server port (default: 8888)
-EASY_MCP_SERVER_LOG_LEVEL=info                   # Logging level (default: info)
-```
+Variable | Required | Default | Description
+--- | --- | --- | ---
+`AZURE_CLIENT_ID` | Yes | - | Azure AD application (client) ID
+`AZURE_CLIENT_SECRET` | Yes | - | Azure AD client secret (value)
+`AZURE_TENANT_ID` | Yes | - | Azure AD directory (tenant) ID
+`AZURE_SCOPE` | No | `https://graph.microsoft.com/.default` | Microsoft Graph scope
+`EASY_MCP_SERVER_PORT` | No | `8887` | REST API port
+`EASY_MCP_SERVER_MCP_PORT` | No | `8888` | MCP server port
+`EASY_MCP_SERVER_LOG_LEVEL` | No | `info` | Logging level
 
 ---
 
@@ -370,6 +403,7 @@ EASY_MCP_SERVER_LOG_LEVEL=info                   # Logging level (default: info)
 2. Test authentication: `curl http://localhost:8887/graph/users/me`
 3. Check server health: `curl http://localhost:8887/health`
 4. Review the [Azure Configuration](#-azure-configuration) section above
+5. For customization and enterprise support, contact: info@easynet.world
 
 ---
 
