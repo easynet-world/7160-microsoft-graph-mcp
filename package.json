@@ -55,6 +55,7 @@
     "api/",
     "mcp/",
     "public/",
+    "images/",
     "start.sh",
     "stop.sh",
     "build.sh",

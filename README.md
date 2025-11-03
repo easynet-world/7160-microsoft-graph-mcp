@@ -1,5 +1,9 @@
 # microsoft-graph-mcp
 
+<div align="center">
+  <img src="images/microsoft-graph-api-logo.png" alt="Microsoft Graph API" style="width: 100%; max-width: 100%;"/>
+</div>
+
 <h2 style="font-size: 1.5em; margin: 1em 0;">🚀 Microsoft Graph MCP Server</h2>
 
 **Microsoft 365 integration for AI assistants** - Connect Cursor, Claude Desktop, and other MCP-compatible tools directly to Microsoft Graph. Access Outlook, OneDrive, Calendar, Teams, and automate workflows with AI.
@@ -11,6 +15,14 @@
 [![MCP](https://img.shields.io/badge/MCP-Compatible-success.svg)](https://modelcontextprotocol.io/)
 [![Microsoft Graph](https://img.shields.io/badge/Microsoft%20Graph-API-0078D4.svg)](https://learn.microsoft.com/en-us/graph/overview)
 [![Powered by easy-mcp-server](https://img.shields.io/badge/Powered%20by-easy--mcp--server-orange.svg)](https://github.com/easynet-world/7134-easy-mcp-server)
+
+---
+
+## 📊 Microsoft Graph Overview
+
+<img src="images/microsoft-graph-network.png" alt="Microsoft Graph Network" style="width: 100%; max-width: 100%;"/>
+
+Microsoft Graph connects users, their activities, and content across Microsoft 365 services - Teams, Calendar, Files, Mail, People, Tasks, and more. This MCP server provides AI assistants with direct access to this unified data layer.
 
 ---
 
