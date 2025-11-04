@@ -43,6 +43,15 @@ Microsoft Graph connects users, their activities, and content across Microsoft 3
 
 ## 🚀 Quick Start
 
+### Installation Methods
+
+Method | Command | Best For
+--- | --- | ---
+**npx (Recommended)** | `npx microsoft-graph-mcp` | Quick testing, no installation needed
+**npm global** | `npm install -g microsoft-graph-mcp` | Frequent use, system-wide access
+**npm local** | `npm install microsoft-graph-mcp` | Project-specific integration
+**Clone & build** | `git clone && npm install && npm run build` | Development and customization
+
 ### Run with npx (Recommended)
 
 ```bash
@@ -78,6 +87,17 @@ npx microsoft-graph-mcp
 ---
 
 ## 📋 Azure Configuration
+
+### Configuration Steps Overview
+
+Step | Action | Where to Find | Environment Variable
+--- | --- | --- | ---
+1 | Create App Registration | [Azure Portal](https://portal.azure.com) → Azure AD → App registrations | -
+2 | Copy Application (client) ID | App registration → Overview | `AZURE_CLIENT_ID`
+3 | Copy Directory (tenant) ID | App registration → Overview | `AZURE_TENANT_ID`
+4 | Create client secret | App registration → Certificates & secrets | `AZURE_CLIENT_SECRET`
+5 | Add API permissions | App registration → API permissions | -
+6 | **Grant admin consent** | API permissions → Grant admin consent | -
 
 ### Step 1: Create Azure App Registration
 
@@ -122,11 +142,32 @@ npx microsoft-graph-mcp
 
 ## 💻 Use in Cursor / Claude Desktop
 
-### Cursor Configuration
+### MCP Client Configuration Overview
+
+Client | Config Location | How to Access
+--- | --- | ---
+**Cursor** | Cursor Settings | Settings → Features → Model Context Protocol → Edit Config
+**Claude Desktop (Mac)** | File system | `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Claude Desktop (Windows)** | File system | `%APPDATA%\Claude\claude_desktop_config.json`
+**Claude Desktop (Linux)** | File system | `~/.config/Claude/claude_desktop_config.json`
+
+### Configuration Steps
+
+#### For Cursor
 
 1. Open **Cursor Settings** → **Features** → **Model Context Protocol**
 2. Click **"Edit Config"**
-3. Add:
+3. Add the configuration below
+4. Save and restart Cursor
+
+#### For Claude Desktop
+
+1. Locate and open the config file (see table above)
+2. Add the configuration below
+3. Save the file
+4. Restart Claude Desktop
+
+### Configuration JSON (All Clients)
 
 ```json
 {
@@ -144,15 +185,7 @@ npx microsoft-graph-mcp
 }
 ```
 
-### Claude Desktop Configuration
-
-1. Open config file:
-   - **Mac**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-2. Add the same configuration as above
-
-3. Restart Claude Desktop
+**Note:** Replace `your-client-id`, `your-client-secret`, and `your-tenant-id` with your actual Azure credentials.
 
 ---
 
@@ -178,17 +211,19 @@ http://localhost:8887/openapi.json
 
 ### 📝 Common API Examples
 
-#### Get Users
-```bash
-curl "http://localhost:8887/graph/users?$top=10"
-```
+Operation | Method | Endpoint | Example
+--- | --- | --- | ---
+**List Users** | GET | `/graph/users` | `curl "http://localhost:8887/graph/users?$top=10"`
+**Get Email** | GET | `/graph/mail` | `curl "http://localhost:8887/graph/mail?userId=user@domain.com&$top=10"`
+**Send Email** | POST | `/graph/mail` | See detailed example below
+**Get Calendar** | GET | `/graph/calendar` | `curl "http://localhost:8887/graph/calendar?userId=user@domain.com&$top=10"`
+**Create Event** | POST | `/graph/calendar/events` | See detailed example below
+**List Files** | GET | `/graph/files` | `curl "http://localhost:8887/graph/files?userId=user@domain.com&$top=20"`
+**Get Teams** | GET | `/graph/teams` | `curl http://localhost:8887/graph/teams`
 
-#### Get Email Messages
-```bash
-curl "http://localhost:8887/graph/mail?userId=user@domain.com&$top=10"
-```
+#### Detailed Examples
 
-#### Send an Email
+**Send an Email:**
 ```bash
 curl -X POST http://localhost:8887/graph/mail \
   -H "Content-Type: application/json" \
@@ -199,12 +234,7 @@ curl -X POST http://localhost:8887/graph/mail \
   }'
 ```
 
-#### Get Calendar Events
-```bash
-curl "http://localhost:8887/graph/calendar?userId=user@domain.com&$top=10"
-```
-
-#### Create Calendar Event
+**Create Calendar Event:**
 ```bash
 curl -X POST http://localhost:8887/graph/calendar/events \
   -H "Content-Type: application/json" \
@@ -214,16 +244,6 @@ curl -X POST http://localhost:8887/graph/calendar/events \
     "end": {"dateTime": "2024-01-15T11:00:00", "timeZone": "UTC"},
     "userId": "user@domain.com"
   }'
-```
-
-#### Get OneDrive Files
-```bash
-curl "http://localhost:8887/graph/files?userId=user@domain.com&$top=20"
-```
-
-#### Get Teams
-```bash
-curl http://localhost:8887/graph/teams
 ```
 
 ---
@@ -343,104 +363,127 @@ Variable | Required | Default | Description
 
 ## 🎯 Use Cases
 
-### In Cursor / Claude Desktop
-- **"Get my latest emails from Outlook"**
-- **"Create a calendar event for tomorrow at 2pm"**
-- **"Show me files in my OneDrive"**
-- **"List all Microsoft Teams in the organization"**
-- **"Send an email to john@example.com about the project update"**
-- **"What contacts do I have?"**
+### By User Type
 
-### Via REST API
-- Build custom Microsoft 365 integrations
-- Automate workflows
-- Create Microsoft Graph applications
-- Integrate with other services
+User Type | Use Case | Example Query/Action
+--- | --- | ---
+**AI Assistant Users** | Email management | "Get my latest emails from Outlook"
+| | Calendar scheduling | "Create a calendar event for tomorrow at 2pm"
+| | File management | "Show me files in my OneDrive"
+| | Team collaboration | "List all Microsoft Teams in the organization"
+| | Communication | "Send an email to john@example.com about the project update"
+| | Contact lookup | "What contacts do I have?"
+**Developers** | Custom integrations | Build Microsoft 365 workflow automations
+| | API testing | Test Microsoft Graph endpoints via Swagger UI
+| | Application development | Create custom M365 applications
+| | Service integration | Connect M365 with third-party services
+**IT Administrators** | User management | List and manage users via REST API
+| | Audit and monitoring | Track email, calendar, and file activities
+| | Provisioning | Automate user and group creation
+| | Reporting | Generate usage reports across M365 services
 
-### Via Swagger UI
-- Explore endpoints visually
-- Test API calls
-- Understand request/response formats
-- Share API documentation
+### By Interface
+
+Interface | Best For | Access Point
+--- | --- | ---
+**MCP (AI Agents)** | Natural language queries, AI-powered workflows | Cursor, Claude Desktop, MCP-compatible tools
+**REST API** | Programmatic access, automation scripts | http://localhost:8887/graph/*
+**Swagger UI** | Visual exploration, testing, documentation | http://localhost:8887/docs
 
 ---
 
 ## 🔧 Troubleshooting
 
-### Server won't start
-- ✅ Check that port 8887/8888 is not in use
-- ✅ Verify your Azure credentials are correct in `.env`
-- ✅ Ensure Node.js >= 22.0.0 is installed
-
-### Authentication errors
-- ✅ Verify `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, and `AZURE_TENANT_ID` are correct
-- ✅ Check that admin consent has been granted for all required permissions
-- ✅ Verify the client secret hasn't expired (create a new one if needed)
-- ✅ Ensure permissions are configured as "Application permissions" (not Delegated)
-
-### "Insufficient privileges" errors
-- ✅ Verify all required permissions are added in Azure Portal
-- ✅ Ensure admin consent has been granted
-- ✅ Check that permissions are Application permissions (not Delegated)
-
-### MCP not working in Cursor/Claude
-- ✅ Restart Cursor/Claude after adding MCP config
-- ✅ Check server is running (`curl http://localhost:8887/health`)
-- ✅ Verify environment variables are set correctly
-- ✅ Check Cursor/Claude logs for MCP errors
-
-### API calls returning errors
-- ✅ Test authentication: `curl http://localhost:8887/graph/users/me`
-- ✅ Check Swagger UI: http://localhost:8887/docs
-- ✅ Verify Azure app has required permissions
-- ✅ Review server logs for detailed error messages
+Issue | Possible Cause | Solution
+--- | --- | ---
+**Server won't start** | Port already in use | Check that port 8887/8888 is not in use: `lsof -i :8887`
+| | Invalid credentials | Verify Azure credentials are correct in `.env`
+| | Wrong Node.js version | Ensure Node.js >= 22.0.0 is installed: `node --version`
+**Authentication errors** | Invalid credentials | Verify `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, and `AZURE_TENANT_ID` are correct
+| | Expired client secret | Create a new client secret in Azure Portal
+| | Missing admin consent | Click "Grant admin consent" in Azure Portal → API permissions
+| | Wrong permission type | Ensure permissions are "Application permissions" (not Delegated)
+**"Insufficient privileges"** | Missing permissions | Verify all required permissions are added in Azure Portal
+| | Admin consent not granted | Grant admin consent in Azure Portal → API permissions
+| | Delegated vs Application | Check that permissions are Application permissions (not Delegated)
+**MCP not working** | Config not loaded | Restart Cursor/Claude after adding MCP config
+| | Server not running | Check server is running: `curl http://localhost:8887/health`
+| | Wrong environment variables | Verify environment variables in MCP config are correct
+| | MCP connection failed | Check Cursor/Claude logs for MCP errors
+**API calls fail** | Authentication issue | Test authentication: `curl http://localhost:8887/graph/users/me`
+| | Endpoint not found | Check Swagger UI: http://localhost:8887/docs
+| | Missing permissions | Verify Azure app has required permissions
+| | Server error | Review server logs for detailed error messages
+**Rate limiting** | Too many requests | Implement exponential backoff, reduce request frequency
+**Timeout errors** | Slow network/API | Increase timeout settings, check network connection
 
 ---
 
 ## 📖 Learn More
 
-- **Microsoft Graph API**: [https://learn.microsoft.com/en-us/graph/overview](https://learn.microsoft.com/en-us/graph/overview)
-- **Model Context Protocol**: [https://modelcontextprotocol.io/](https://modelcontextprotocol.io/)
+### Documentation & Resources
+
+Resource | Description | Link
+--- | --- | ---
+**Microsoft Graph API** | Official Microsoft Graph documentation and API reference | [learn.microsoft.com/graph](https://learn.microsoft.com/en-us/graph/overview)
+**Model Context Protocol** | MCP specification and implementation guides | [modelcontextprotocol.io](https://modelcontextprotocol.io/)
+**Azure App Registration** | Guide to creating and configuring Azure AD apps | [learn.microsoft.com/azure](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
+**Graph API Permissions** | Complete list of Microsoft Graph permissions | [learn.microsoft.com/permissions](https://learn.microsoft.com/en-us/graph/permissions-reference)
+**easy-mcp-server** | Framework documentation for customization | [github.com/easynet-world](https://github.com/easynet-world/7134-easy-mcp-server)
 
 ---
 
 ## 📦 Package Info
 
-- **npm**: [microsoft-graph-mcp](https://www.npmjs.com/package/microsoft-graph-mcp)
-- **Repository**: [GitHub](https://github.com/easynet-world/7160-microsoft-graph-mcp)
-- **License**: MIT
+Resource | Link
+--- | ---
+**npm Package** | [microsoft-graph-mcp](https://www.npmjs.com/package/microsoft-graph-mcp)
+**GitHub Repository** | [7160-microsoft-graph-mcp](https://github.com/easynet-world/7160-microsoft-graph-mcp)
+**Issue Tracker** | [GitHub Issues](https://github.com/easynet-world/7160-microsoft-graph-mcp/issues)
+**License** | MIT
+**Support** | info@easynet.world
 
 ---
 
 ## 🆘 Need Help?
 
-1. Check **Swagger UI**: http://localhost:8887/docs
-2. Test authentication: `curl http://localhost:8887/graph/users/me`
-3. Check server health: `curl http://localhost:8887/health`
-4. Review the [Azure Configuration](#-azure-configuration) section above
-5. For customization and enterprise support, contact: info@easynet.world
+### Quick Diagnostic Checklist
+
+Step | Check | Command/Action
+--- | --- | ---
+1 | **Swagger UI** | Open http://localhost:8887/docs
+2 | **Server Health** | `curl http://localhost:8887/health`
+3 | **Authentication** | `curl http://localhost:8887/graph/users/me`
+4 | **Azure Config** | Review [Azure Configuration](#-azure-configuration) section
+5 | **Troubleshooting** | Check [Troubleshooting](#-troubleshooting) table above
+6 | **Enterprise Support** | Contact: info@easynet.world
 
 ---
 
 ## 🛠️ Development
 
-This MCP server is built using the **easy-mcp-server** framework. 
+This MCP server is built using the **easy-mcp-server** framework.
 
-For development documentation, including:
-- How to create custom endpoints
-- Project structure and architecture
-- Testing and debugging
-- Contributing guidelines
+### Development Resources
 
-👉 **See the [easy-mcp-server documentation](https://github.com/easynet-world/7134-easy-mcp-server) for development details.**
+Topic | Description | Link
+--- | --- | ---
+**Custom Endpoints** | How to create custom API endpoints | [easy-mcp-server docs](https://github.com/easynet-world/7134-easy-mcp-server)
+**Project Structure** | Architecture and code organization | [easy-mcp-server docs](https://github.com/easynet-world/7134-easy-mcp-server)
+**Testing & Debugging** | Test setup and debugging tips | [easy-mcp-server docs](https://github.com/easynet-world/7134-easy-mcp-server)
+**Contributing** | Guidelines for contributions | [easy-mcp-server docs](https://github.com/easynet-world/7134-easy-mcp-server)
+**TypeScript** | Type definitions and compilation | See `tsconfig.json` and `lib/` directory
 
----
+### Local Development Setup
 
-## 📦 Package Info
-
-- **npm**: [microsoft-graph-mcp](https://www.npmjs.com/package/microsoft-graph-mcp)
-- **Repository**: [GitHub](https://github.com/easynet-world/7160-microsoft-graph-mcp)
-- **License**: MIT
+Step | Command | Purpose
+--- | --- | ---
+1. **Clone** | `git clone https://github.com/easynet-world/7160-microsoft-graph-mcp.git` | Get source code
+2. **Install** | `npm install` | Install dependencies
+3. **Configure** | Copy `.env.example` to `.env` | Set environment variables
+4. **Build** | `npm run build` | Compile TypeScript
+5. **Test** | `npm test` | Run test suite
+6. **Start** | `npm start` | Start development server
 
 ---
 
